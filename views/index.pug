@@ -1,0 +1,155 @@
+doctype html
+html
+  head
+    title Mi Aplicación
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      h1 {
+        color: #333;
+        text-align: center;
+      }
+      h2 {
+        color: #666;
+        margin-top: 30px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      form {
+        margin-bottom: 20px;
+      }
+      input[type="text"],
+      input[type="number"],
+      input[type="email"],
+      button,
+      select {
+        padding: 8px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        width: auto;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      ul {
+        padding-left: 20px;
+      }
+
+  body
+    h1 Mi Aplicación
+
+    // Mostrar datos de Cursos
+    h2 Datos de Cursos
+    table
+      thead
+        tr
+          th ID
+          th Nombre
+          th Descripción
+          th Acciones
+      tbody
+        each curso in cursos
+          tr
+            td #{curso.id}
+            td #{curso.nombre}
+            td #{curso.descripcion}
+            td
+              form(style="display:inline-block", action="/update-curso", method="POST")
+                input(type="hidden", name="id", value=curso.id)
+                input(type="text", name="nombre", placeholder="Nuevo Nombre", required)
+                input(type="text", name="descripcion", placeholder="Nueva Descripción", required)
+                button(type="submit") Actualizar
+              form(style="display:inline-block", action="/delete-curso", method="POST")
+                input(type="hidden", name="id", value=curso.id)
+                button(type="submit") Eliminar
+
+    // Formulario para agregar nuevo curso
+    h2 Agregar nuevo curso
+    form(action="/add-curso", method="POST")
+      input(type="text", name="nombre", placeholder="Nombre", required)
+      input(type="text", name="descripcion", placeholder="Descripción", required)
+      button(type="submit") Agregar
+
+    // Mostrar datos de Alumnos
+h2 Datos de Alumnos
+table
+  thead
+    tr
+      th ID
+      th Nombre
+      th Edad
+      th Email
+      th Cursos
+      th Acciones
+  tbody
+    each alumno in alumnos
+      tr
+        td #{alumno.id}
+        td #{alumno.nombre}
+        td #{alumno.edad}
+        td #{alumno.email}
+        td
+          ul
+            if alumno.cursos && alumno.cursos.length > 0
+              each cursoId in alumno.cursos
+                - const curso = cursos.find(c => c.id === cursoId);
+                li #{curso.nombre} - #{curso.descripcion}
+            else
+              li No hay cursos matriculados
+        td
+          form(style="display:inline-block", action="/update-alumno", method="POST")
+            input(type="hidden", name="id", value=alumno.id)
+            input(type="text", name="nombre", placeholder="Nuevo Nombre", required)
+            input(type="number", name="edad", placeholder="Nueva Edad", required, min="1")
+            input(type="email", name="email", placeholder="Nuevo Email", required)
+            select(name="cursos[]", multiple, required)
+              each curso in cursos
+                option(value=curso.id, selected=alumno.cursos && alumno.cursos.includes(curso.id)) #{curso.nombre}
+            button(type="submit") Actualizar
+          form(style="display:inline-block", action="/delete-alumno", method="POST")
+            input(type="hidden", name="id", value=alumno.id)
+            button(type="submit") Eliminar
+
+
+    // Formulario para agregar nuevo alumno
+    h2 Agregar nuevo alumno
+    form(action="/add-alumno", method="POST")
+      input(type="text", name="nombre", placeholder="Nombre", required)
+      input(type="number", name="edad", placeholder="Edad", required, min="1")
+      input(type="email", name="email", placeholder="Email", required)
+      select(name="cursos[]", multiple, required)
+        each curso in cursos
+          option(value=curso.id) #{curso.nombre}
+      button(type="submit") Agregar
